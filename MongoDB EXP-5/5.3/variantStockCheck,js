@@ -1,0 +1,22 @@
+db.products.aggregate([
+  // 1. Deconstruct the variants array to output one document for each variant
+  {
+    $unwind: "$variants"
+  },
+  // 2. Filter for variants where stock is 0
+  {
+    $match: {
+      "variants.stock": 0
+    }
+  },
+  // 3. Project only the required fields
+  {
+    $project: {
+      _id: 0, // Exclude the product _id
+      product_name: "$name",
+      sku: "$variants.sku",
+      color: "$variants.color",
+      size: "$variants.size"
+    }
+  }
+])
